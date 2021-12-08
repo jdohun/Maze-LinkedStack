@@ -32,39 +32,40 @@ public:
         if (Maze == NULL) {
             printf("FILE OPEN ERROR\n");
         }
+        else {
+		    fscanf_s(Maze, "%d %d", &row, &column);
+            init(column, row);
 
-		fscanf_s(Maze, "%d %d", &row, &column);
-        init(column, row);
-
-        for (int r = 0; r < row; ++r) {
-            for (int c = 0; c < column; ++c) {
-                while (1) {
-                    load = getc(Maze);
-                    if ((load >= '0' && load <= '9')) {
-                        ungetc(load, Maze);
-                        fscanf_s(Maze, "%d", &map[r][c]);
-                        break;
+            for (int r = 0; r < row; ++r) {
+                for (int c = 0; c < column; ++c) {
+                    while (1) {
+                        load = getc(Maze);
+                        if ((load >= '0' && load <= '9')) {
+                            ungetc(load, Maze);
+                            fscanf_s(Maze, "%d", &map[r][c]);
+                            break;
+                        }
+                        else if (load == 'e') { // 입구 위치 저장
+                            map[r][c] = load;
+                            Node* entry = new Node(r, c);
+                            locStack.push(entry);
+                            break;
+                        }
+                        else if (load == 'x') { // 출구 위치 저장
+                            map[r][c] = load;
+                            exitLoc.setRow(r);
+                            exitLoc.setCol(c);
+                            break;
+                        }
                     }
-                    else if (load == 'e') { // 입구 위치 저장
-                        map[r][c] = load;
-                        Node* entry = new Node(r, c);
-                        locStack.push(entry);
-                        break;
-                    }
-                    else if (load == 'x') { // 출구 위치 저장
-                        map[r][c] = load;
-                        exitLoc.setRow(r);
-                        exitLoc.setCol(c);
-                        break;
-                    }
+                    // 미로 체크용
+                    //if (map[i][j] == 'e' || map[i][j] == 'x') { printf("%2c ", map[i][j]); }
+                    //else { printf("%2d ", map[i][j]); }
                 }
-                // 미로 체크용
-                //if (map[i][j] == 'e' || map[i][j] == 'x') { printf("%2c ", map[i][j]); }
-                //else { printf("%2d ", map[i][j]); }
+                //printf("\n");
             }
-            //printf("\n");
+            fclose(Maze);
         }
-        fclose(Maze);
     }
 
     bool isValidLoc(int r, int c) {
