@@ -24,7 +24,7 @@ public:
         delete[]map;
     }
 
-    void CheckData(const char* fname) {     // 행열 값이 주어지는지 확인
+    bool CheckData(const char* fname) {     // 행열 값이 주어지는지 확인
         char load;
         FILE* Maze;
         fopen_s(&Maze, fname, "rb");
@@ -33,10 +33,12 @@ public:
             if ((load = fgetc(Maze)) == '\n' || load == '\r') {
                 init(row, column);
                 fclose(Maze);
+                return true;    // 행열 값 있음
             }
             else {
                 fclose(Maze);
                 RowNCol(fname);
+                return false;   /// 행열 값 없음
             }
         }
     }
@@ -51,7 +53,7 @@ public:
             while ((load = fgetc(Maze)) != EOF) { if (load == '\n') ++r; }
             fclose(Maze);
         }
-        printf("행 * 열  = %d * %d\n", r, c);
+        // printf("행 * 열  = %d * %d\n", r, c);
         row = r;
         column = c;
         init(row, column);
@@ -65,7 +67,11 @@ public:
             printf("FILE OPEN ERROR\n");
         }
         else {
-            CheckData(fname);
+            if (CheckData(fname)) { // 행열 값이 있으면 한 줄 건너뜀
+                while (1) {
+                    if (fgetc(Maze) == '\n') break;
+                };
+            }
 
             for (int i = 0; i < row; ++i) {
                 for (int j = 0; j < column; ++j) {
@@ -163,5 +169,4 @@ int main() {
     //maze.Load("미로 test.txt");
     maze.Load("미로 행열개수세기.txt");
     maze.searchExit();
-    //maze.RowNCol("미로 행열개수세기.txt");
 }
