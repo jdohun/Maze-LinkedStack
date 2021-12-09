@@ -1,5 +1,6 @@
 #include "LinkedStack.h"
 #include <cstdlib>
+#include <Windows.h>
 using namespace std;
 
 class Maze {
@@ -33,28 +34,28 @@ public:
             printf("FILE OPEN ERROR\n");
         }
         else {
-		    fscanf_s(Maze, "%d %d", &row, &column);
+		    fscanf_s(Maze, "%d %d", &column, &row);
             init(column, row);
 
-            for (int r = 0; r < row; ++r) {
-                for (int c = 0; c < column; ++c) {
+            for (int i = 0; i < row; ++i) {
+                for (int j = 0; j < column; ++j) {
                     while (1) {
                         load = getc(Maze);
                         if ((load >= '0' && load <= '9')) {
                             ungetc(load, Maze);
-                            fscanf_s(Maze, "%d", &map[r][c]);
+                            fscanf_s(Maze, "%d", &map[i][j]);
                             break;
                         }
                         else if (load == 'e') { // 입구 위치 저장
-                            map[r][c] = load;
-                            Node* entry = new Node(r, c);
+                            map[i][j] = load;
+                            Node* entry = new Node(i, j);
                             locStack.push(entry);
                             break;
                         }
                         else if (load == 'x') { // 출구 위치 저장
-                            map[r][c] = load;
-                            exitLoc.setRow(r);
-                            exitLoc.setCol(c);
+                            map[i][j] = load;
+                            exitLoc.setRow(i);
+                            exitLoc.setCol(j);
                             break;
                         }
                     }
@@ -72,7 +73,7 @@ public:
         if (r < 0 || c < 0 || r >= row || c >= column) //범위를 벗어나면 갈 수 없다
             return false;
         else //비어있는 통로나 도착지점일 때만 true
-            return (map[r][c] == '0' || map[r][c] == 'x');
+            return (map[r][c] == 0 || map[r][c] == 'x');
     }
 
     void print() {  //현재 Maze를 화면에 출력
@@ -102,7 +103,7 @@ public:
 
     void searchExit() { //실제 미로를 탐색하는 함수
         print();
-
+        Sleep(1000);
         while (locStack.isEmpty() == false) {  //스택이 비어있지 않는 동안
             Location2D* here = locStack.pop()->getLocation(); //스택에 상단 객체 복사
             int r = here->getRow();
@@ -114,40 +115,20 @@ public:
             }
             else {
                 map[r][c] = 7; //지나온 곳으로 표기
+                system("cls");
                 print();
-
                 //갈 수 있는 곳 다 가본다
                 if (isValidLoc(r - 1, c)) { locStack.push(new Node(r - 1, c)); }
                 if (isValidLoc(r + 1, c)) { locStack.push(new Node(r + 1, c)); }
                 if (isValidLoc(r, c - 1)) { locStack.push(new Node(r, c - 1)); }
                 if (isValidLoc(r, c + 1)) { locStack.push(new Node(r, c + 1)); }
+                Sleep(1000);
             }
         }
     }
 };
 
 int main() {
-    /*
-    LinkedStack stack;
-    stack.dispaly();
-
-    Node* node = stack.pop();
-    printf("[Pop항목]\n");
-    node->display();
-    printf("\n");
-    delete node;
-    stack.dispaly();
-    */
-    /*
-    LinkedStack locStack;
-    Node* entry = new Node(1, 0);
-    locStack.push(entry);
-
-    while (locStack.isEmpty() == false) {
-
-    }
-    */
-
     Maze maze;
     maze.Load("미로 test.txt");
     maze.searchExit();
