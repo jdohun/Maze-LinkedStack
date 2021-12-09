@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="LinkedStack.cpp">
+    <ClCompile Include="Maze_by_Linked.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

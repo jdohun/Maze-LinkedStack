@@ -139,7 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="LinkedStack.cpp" />
+    <ClCompile Include="Maze_by_Linked.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LinkedQueue.h" />
