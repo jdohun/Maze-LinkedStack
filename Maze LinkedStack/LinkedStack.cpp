@@ -1,7 +1,6 @@
 #include "LinkedStack.h"
 #include <cstdlib>
 #include <Windows.h>
-using namespace std;
 
 class Maze {
 public:
@@ -24,6 +23,7 @@ public:
             delete[]map[i];
         delete[]map;
     }
+
     //void WidthNHeight(FILE* file, int* width, int* height){}
 
     void Load(const char* fname) { //파일에서 미로 파일을 읽어옴
@@ -132,4 +132,5 @@ int main() {
     Maze maze;
     maze.Load("미로 test.txt");
     maze.searchExit();
+    maze.reset();
 }

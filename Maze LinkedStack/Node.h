@@ -7,7 +7,7 @@ public:
 	Node(int row, int col)
 		: Loc(new Location2D(row, col)), link(NULL)
 	{ }
-	~Node(){}
+	~Node() { if (Loc != NULL) delete Loc; }
 private:
 	Location2D* Loc;
 	Node* link;	// 다음 노드를 가리킬 포인터 변수
