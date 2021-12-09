@@ -13,7 +13,7 @@ private:
     LinkedStack locStack;   //스택
     Location2D exitLoc;     //미로의 출구
 public:
-    void init(int col, int row) { //map 이차원 배열을 동적으로 할당
+    void init(int row, int col) { //map 이차원 배열을 동적으로 할당
         map = new int* [row];
         for (int i = 0; i < row; i++)
             map[i] = new int[col];
@@ -24,7 +24,38 @@ public:
         delete[]map;
     }
 
-    //void WidthNHeight(FILE* file, int* width, int* height){}
+    void CheckData(const char* fname) {     // 행열 값이 주어지는지 확인
+        char load;
+        FILE* Maze;
+        fopen_s(&Maze, fname, "rb");
+        if (Maze != NULL) {
+            fscanf_s(Maze, "%d %d", &column, &row);
+            if ((load = fgetc(Maze)) == '\n' || load == '\r') {
+                init(row, column);
+                fclose(Maze);
+            }
+            else {
+                fclose(Maze);
+                RowNCol(fname);
+            }
+        }
+    }
+
+    void RowNCol(const char* fname){    // 행열 세기
+        char load;
+        int c = 0, r = 1;
+        FILE* Maze;
+        fopen_s(&Maze, fname, "rb");
+        if (Maze != NULL) {
+            while ((load = fgetc(Maze)) != '\n' && load != '\r') { if (load != ' ') ++c; }
+            while ((load = fgetc(Maze)) != EOF) { if (load == '\n') ++r; }
+            fclose(Maze);
+        }
+        printf("행 * 열  = %d * %d\n", r, c);
+        row = r;
+        column = c;
+        init(row, column);
+    }
 
     void Load(const char* fname) { //파일에서 미로 파일을 읽어옴
         char load;
@@ -34,8 +65,7 @@ public:
             printf("FILE OPEN ERROR\n");
         }
         else {
-		    fscanf_s(Maze, "%d %d", &column, &row);
-            init(column, row);
+            CheckData(fname);
 
             for (int i = 0; i < row; ++i) {
                 for (int j = 0; j < column; ++j) {
@@ -130,6 +160,8 @@ public:
 
 int main() {
     Maze maze;
-    maze.Load("미로 test.txt");
+    //maze.Load("미로 test.txt");
+    maze.Load("미로 행열개수세기.txt");
     maze.searchExit();
+    //maze.RowNCol("미로 행열개수세기.txt");
 }
