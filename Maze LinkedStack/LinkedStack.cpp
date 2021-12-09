@@ -144,7 +144,7 @@ public:
 
     void searchExit_1() { //실제 미로를 탐색하는 함수
         print();
-        Sleep(1000);
+        Sleep(400);
         while (locStack.isEmpty() == false) {  //스택이 비어있지 않는 동안
             Location2D* here = locStack.pop()->getLocation(); //스택에 상단 객체 복사
             int r = here->getRow();
