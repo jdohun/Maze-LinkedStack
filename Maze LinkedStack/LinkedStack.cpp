@@ -132,5 +132,4 @@ int main() {
     Maze maze;
     maze.Load("¹Ì·Î test.txt");
     maze.searchExit();
-    maze.reset();
 }
