@@ -1,6 +1,7 @@
 #include "LinkedStack.h"
 #include <cstdlib>
 #include <Windows.h>
+#include "LinkedQueue.h"
 
 class Maze {
 public:
@@ -11,6 +12,7 @@ private:
     int row;                //미로의 높이
     int** map;              //미로 맵
     LinkedStack locStack;   //스택
+    LinkedQueue locQueue;
     Location2D exitLoc;     //미로의 출구
 public:
     void init(int row, int col) { //map 이차원 배열을 동적으로 할당
@@ -59,7 +61,7 @@ public:
         init(row, column);
     }
 
-    void Load(const char* fname) { //파일에서 미로 파일을 읽어옴
+    void Load(const char* fname, int a) { //파일에서 미로 파일을 읽어옴
         char load;
         FILE* Maze;
         fopen_s(&Maze, fname, "rb");
@@ -85,7 +87,10 @@ public:
                         else if (load == 'e') { // 입구 위치 저장
                             map[i][j] = load;
                             Node* entry = new Node(i, j);
-                            locStack.push(entry);
+                            if (a == 1)
+                                locQueue.enqueue(entry);
+                            else
+                                locStack.push(entry);
                             break;
                         }
                         else if (load == 'x') { // 출구 위치 저장
@@ -137,7 +142,7 @@ public:
         printf("\n");
     }
 
-    void searchExit() { //실제 미로를 탐색하는 함수
+    void searchExit_1() { //실제 미로를 탐색하는 함수
         print();
         Sleep(1000);
         while (locStack.isEmpty() == false) {  //스택이 비어있지 않는 동안
@@ -158,15 +163,63 @@ public:
                 if (isValidLoc(r + 1, c)) { locStack.push(new Node(r + 1, c)); }
                 if (isValidLoc(r, c - 1)) { locStack.push(new Node(r, c - 1)); }
                 if (isValidLoc(r, c + 1)) { locStack.push(new Node(r, c + 1)); }
-                Sleep(1000);
+                Sleep(400);
             }
+        }
+
+
+    
+
+    }
+
+    void searchExit() { //실제 미로를 탐색하는 함수
+
+        print();
+        while (locQueue.isEmpty() == false) {  //스택이 비어있지 않는 동안
+            Location2D* here = locQueue.dequeue()->getLocation(); //스택에 상단 객체 복사
+            int r = here->getRow();
+            int c = here->getCol();
+
+            map[r][c] = 7; //시작점은 최적 경로
+            if (exitLoc.getCol() == c && exitLoc.getRow() == r) {
+                return;
+            }
+            else
+            {
+                map[r][c] = 7; //지나온 곳으로 표기
+                system("cls");
+                print();
+                Sleep(400);
+
+                //갈 수 있는 곳 다 가본다
+                if (isValidLoc(r - 1, c)) { locQueue.enqueue(new Node(r - 1, c)); }
+                if (isValidLoc(r + 1, c)) { locQueue.enqueue(new Node(r + 1, c)); }
+                if (isValidLoc(r, c - 1)) { locQueue.enqueue(new Node(r, c - 1)); }
+                if (isValidLoc(r, c + 1)) { locQueue.enqueue(new Node(r, c + 1)); }
+
+
+            }
+
         }
     }
 };
 
-int main() {
-    Maze maze;
-    //maze.Load("미로 test.txt");
-    maze.Load("미로 행열개수세기.txt");
-    maze.searchExit();
-}
+    int main()
+    {
+        Maze maze;
+        int a = 0;
+        while (true) {
+            printf("너비우선으로 탐색하고 싶으면 1번,깊이 우선으로 탐색하고 싶으면 2를 입력하세요.");
+            scanf_s("%d", &a);
+            //maze.Load("미로 test.txt");
+            maze.Load("미로 행열개수세기.txt", a);
+            if (a == 1)
+                maze.searchExit();
+            else
+                maze.searchExit_1();
+            printf(" 초기화면으로 가시고 싶으면 1번 프로그램 종료를 원하시면 2번을 입력하세요");
+            scanf_s("%d", &a);
+            if (a == 2)
+                break;
+        }
+    }

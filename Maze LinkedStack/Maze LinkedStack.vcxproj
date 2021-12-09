@@ -142,6 +142,7 @@
     <ClCompile Include="LinkedStack.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="LinkedQueue.h" />
     <ClInclude Include="LinkedStack.h" />
     <ClInclude Include="Location2D.h" />
     <ClInclude Include="Node.h" />
